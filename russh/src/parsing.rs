@@ -1,4 +1,4 @@
-use russh_keys::helpers::map_err;
+use crate::helpers::map_err;
 use ssh_encoding::{Decode, Encode, Reader};
 
 use crate::{msg, CryptoVec};

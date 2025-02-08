@@ -50,7 +50,7 @@ mod signature_workarounds {
     use ssh_key::{Algorithm, HashAlg};
 
     use crate::helpers::EncodedExt;
-    use crate::key::PrivateKeyWithHashAlg;
+    use crate::keys::key::PrivateKeyWithHashAlg;
 
     fn sign_rsa_with_hash_alg_encoded(
         key: &RsaPrivateKey,

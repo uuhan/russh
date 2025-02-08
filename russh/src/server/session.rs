@@ -1,11 +1,11 @@
 use std::collections::{HashMap, VecDeque};
 use std::sync::Arc;
 
+use crate::helpers::NameList;
+use crate::keys::map_err;
 use channels::WindowSizeRef;
 use log::debug;
 use negotiation::parse_kex_algo_list;
-use russh_keys::helpers::NameList;
-use russh_keys::map_err;
 use tokio::io::{AsyncRead, AsyncWrite, AsyncWriteExt};
 use tokio::sync::mpsc::{unbounded_channel, Receiver, Sender, UnboundedReceiver};
 use tokio::sync::oneshot;

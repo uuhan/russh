@@ -18,7 +18,7 @@ use {std, tokio};
 use super::{msg, Constraint};
 use crate::helpers::{sign_workaround_encoded, EncodedExt};
 use crate::key::PrivateKeyWithHashAlg;
-use crate::Error;
+use crate::keys::Error;
 
 #[derive(Clone)]
 #[allow(clippy::type_complexity)]

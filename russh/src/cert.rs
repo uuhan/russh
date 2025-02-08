@@ -1,7 +1,7 @@
 use core::str;
 
-use russh_keys::helpers::AlgorithmExt;
-use russh_keys::key::PrivateKeyWithHashAlg;
+use crate::helpers::AlgorithmExt;
+use crate::keys::key::PrivateKeyWithHashAlg;
 use ssh_encoding::Decode;
 use ssh_key::public::KeyData;
 use ssh_key::{Algorithm, Certificate, HashAlg, PublicKey};

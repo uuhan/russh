@@ -1,9 +1,9 @@
 use std::cell::RefCell;
 use std::ops::DerefMut;
 
+use crate::helpers::sign_workaround_encoded;
+use crate::keys::key::PrivateKeyWithHashAlg;
 use log::debug;
-use russh_keys::helpers::sign_workaround_encoded;
-use russh_keys::key::PrivateKeyWithHashAlg;
 use ssh_encoding::Encode;
 use ssh_key::Algorithm;
 

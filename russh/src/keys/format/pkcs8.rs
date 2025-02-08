@@ -7,7 +7,7 @@ use pkcs8::{AssociatedOid, EncodePrivateKey, PrivateKeyInfo, SecretDocument};
 use ssh_key::private::{EcdsaKeypair, Ed25519Keypair, Ed25519PrivateKey, KeypairData};
 use ssh_key::PrivateKey;
 
-use crate::Error;
+use crate::keys::Error;
 
 /// Decode a PKCS#8-encoded private key.
 pub fn decode_pkcs8(

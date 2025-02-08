@@ -11,7 +11,7 @@ use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 
 use super::{msg, Constraint};
 use crate::helpers::EncodedExt;
-use crate::{key, Error};
+use crate::keys::{key, Error};
 
 pub trait AgentStream: AsyncRead + AsyncWrite {}
 

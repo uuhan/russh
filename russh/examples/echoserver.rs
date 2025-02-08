@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
+use crate::keys::Certificate;
 use async_trait::async_trait;
 use rand_core::OsRng;
 use russh::keys::*;
 use russh::server::{Msg, Server as _, Session};
 use russh::*;
-use russh_keys::Certificate;
 use tokio::sync::Mutex;
 
 #[tokio::main]
@@ -20,7 +20,7 @@ async fn main() {
         auth_rejection_time: std::time::Duration::from_secs(3),
         auth_rejection_time_initial: Some(std::time::Duration::from_secs(0)),
         keys: vec![
-            russh_keys::PrivateKey::random(&mut OsRng, russh_keys::Algorithm::Ed25519).unwrap(),
+            crate::keys::PrivateKey::random(&mut OsRng, crate::keys::Algorithm::Ed25519).unwrap(),
         ],
         preferred: Preferred {
             // key: Cow::Borrowed(&[CERT_ECDSA_SHA2_P256]),

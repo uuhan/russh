@@ -35,11 +35,11 @@ use std::pin::Pin;
 use std::sync::Arc;
 use std::task::{Context, Poll};
 
+use crate::map_err;
 use async_trait::async_trait;
 use bytes::Bytes;
 use futures::future::Future;
 use log::{debug, error};
-use russh_keys::map_err;
 use russh_util::runtime::JoinHandle;
 use ssh_key::{Certificate, PrivateKey};
 use tokio::io::{AsyncRead, AsyncWrite, AsyncWriteExt};

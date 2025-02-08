@@ -16,14 +16,14 @@ use core::str;
 use std::cell::RefCell;
 use std::time::SystemTime;
 
+use crate::helpers::NameList;
+use crate::keys::map_err;
 use auth::*;
 use byteorder::{BigEndian, ByteOrder};
 use bytes::Bytes;
 use cert::PublicKeyOrCertificate;
 use log::{debug, error, info, trace, warn};
 use negotiation::Select;
-use russh_keys::helpers::NameList;
-use russh_keys::map_err;
 use ssh_encoding::{Decode, Encode, Reader};
 use ssh_key::PublicKey;
 use tokio::time::Instant;

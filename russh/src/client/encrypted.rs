@@ -17,9 +17,9 @@ use std::convert::TryInto;
 use std::num::Wrapping;
 use std::ops::Deref;
 
+use crate::helpers::{map_err, sign_workaround_encoded, AlgorithmExt, EncodedExt};
 use bytes::Bytes;
 use log::{debug, error, info, trace, warn};
-use russh_keys::helpers::{map_err, sign_workaround_encoded, AlgorithmExt, EncodedExt};
 use ssh_encoding::{Decode, Encode};
 
 use crate::cert::PublicKeyOrCertificate;

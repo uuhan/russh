@@ -114,8 +114,10 @@ pub mod kex;
 pub mod mac;
 mod sig_workaround;
 
-/// Re-export of the `russh-keys` crate.
-pub use russh_keys as keys;
+#[doc(hidden)]
+pub mod helpers;
+pub mod keys;
+pub use keys::key;
 
 mod msg;
 mod negotiation;
@@ -278,7 +280,7 @@ pub enum Error {
     RequestDenied,
 
     #[error(transparent)]
-    Keys(#[from] russh_keys::Error),
+    Keys(#[from] crate::keys::Error),
 
     #[error(transparent)]
     IO(#[from] std::io::Error),

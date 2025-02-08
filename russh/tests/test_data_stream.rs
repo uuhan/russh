@@ -1,11 +1,11 @@
 use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::sync::Arc;
 
+use crate::keys::key::PrivateKeyWithHashAlg;
 use rand::RngCore;
 use rand_core::OsRng;
 use russh::server::{self, Auth, Msg, Server as _, Session};
 use russh::{client, Channel};
-use russh_keys::key::PrivateKeyWithHashAlg;
 use ssh_key::PrivateKey;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 

@@ -42,13 +42,13 @@ use std::pin::Pin;
 use std::str::FromStr;
 use std::sync::Arc;
 
+use crate::keys::key::PrivateKeyWithHashAlg;
+use crate::keys::map_err;
 use async_trait::async_trait;
 use bytes::Bytes;
 use futures::task::{Context, Poll};
 use futures::Future;
 use log::{debug, error, info, trace};
-use russh_keys::key::PrivateKeyWithHashAlg;
-use russh_keys::map_err;
 use ssh_encoding::{Decode, Encode, Reader};
 use ssh_key::{Algorithm, Certificate, PrivateKey, PublicKey};
 use tokio::io::{AsyncRead, AsyncWrite, AsyncWriteExt, ReadHalf, WriteHalf};
@@ -386,7 +386,7 @@ impl<H: Handler> Handle<H> {
 
     /// Authenticate using a custom method that implements the
     /// [`Signer`][auth::Signer] trait. Currently, this crate only provides an
-    /// implementation for an [SSH agent][russh_keys::agent::client::AgentClient].
+    /// implementation for an [SSH agent][crate::keys::agent::client::AgentClient].
     pub async fn authenticate_publickey_with<U: Into<String>, S: auth::Signer>(
         &mut self,
         user: U,
@@ -716,7 +716,7 @@ pub async fn connect<H: Handler + Send + 'static, A: tokio::net::ToSocketAddrs>(
     addrs: A,
     handler: H,
 ) -> Result<Handle<H>, H::Error> {
-    use russh_keys::map_err;
+    use crate::keys::map_err;
 
     let socket = map_err!(tokio::net::TcpStream::connect(addrs).await)?;
     connect_stream(config, socket, handler).await
