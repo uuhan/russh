@@ -1,5 +1,5 @@
 use crate::keys::map_err;
-use log::error;
+use tracing::error;
 use ssh_encoding::Encode;
 use tokio::sync::oneshot;
 

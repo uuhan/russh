@@ -12,7 +12,7 @@ use tokio::sync::Mutex;
 #[tokio::main]
 async fn main() {
     env_logger::builder()
-        .filter_level(log::LevelFilter::Debug)
+        .filter_level(tracing::LevelFilter::Debug)
         .init();
 
     let config = russh::server::Config {

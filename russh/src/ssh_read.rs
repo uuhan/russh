@@ -1,7 +1,7 @@
 use std::pin::Pin;
 
 use futures::task::*;
-use log::debug;
+use tracing::debug;
 use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, ReadBuf};
 
 use crate::{CryptoVec, Error};

@@ -4,7 +4,7 @@ use std::sync::Arc;
 use crate::helpers::NameList;
 use crate::keys::map_err;
 use channels::WindowSizeRef;
-use log::debug;
+use tracing::debug;
 use negotiation::parse_kex_algo_list;
 use tokio::io::{AsyncRead, AsyncWrite, AsyncWriteExt};
 use tokio::sync::mpsc::{unbounded_channel, Receiver, Sender, UnboundedReceiver};

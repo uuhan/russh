@@ -92,7 +92,7 @@
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Formatter};
 
-use log::debug;
+use tracing::debug;
 use parsing::ChannelOpenConfirmation;
 pub use russh_cryptovec::CryptoVec;
 use ssh_encoding::{Decode, Encode};

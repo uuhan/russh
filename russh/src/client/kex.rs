@@ -1,4 +1,4 @@
-use log::{debug, trace};
+use tracing::{debug, trace};
 
 use crate::cipher::SealingKey;
 use crate::client::Config;

@@ -27,7 +27,7 @@ use cbc::CbcWrapper;
 use ctr::Ctr128BE;
 use delegate::delegate;
 use des::TdesEde3;
-use log::debug;
+use tracing::debug;
 use once_cell::sync::Lazy;
 use ssh_encoding::Encode;
 use tokio::io::{AsyncRead, AsyncReadExt};

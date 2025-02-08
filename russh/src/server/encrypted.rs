@@ -22,7 +22,7 @@ use auth::*;
 use byteorder::{BigEndian, ByteOrder};
 use bytes::Bytes;
 use cert::PublicKeyOrCertificate;
-use log::{debug, error, info, trace, warn};
+use tracing::{debug, error, info, trace, warn};
 use negotiation::Select;
 use ssh_encoding::{Decode, Encode, Reader};
 use ssh_key::PublicKey;

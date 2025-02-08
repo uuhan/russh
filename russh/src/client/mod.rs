@@ -48,7 +48,7 @@ use async_trait::async_trait;
 use bytes::Bytes;
 use futures::task::{Context, Poll};
 use futures::Future;
-use log::{debug, error, info, trace};
+use tracing::{debug, error, info, trace};
 use ssh_encoding::{Decode, Encode, Reader};
 use ssh_key::{Algorithm, Certificate, PrivateKey, PublicKey};
 use tokio::io::{AsyncRead, AsyncWrite, AsyncWriteExt, ReadHalf, WriteHalf};

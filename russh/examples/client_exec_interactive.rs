@@ -12,7 +12,7 @@ use anyhow::Result;
 use async_trait::async_trait;
 use clap::Parser;
 use key::PrivateKeyWithHashAlg;
-use log::info;
+use tracing::info;
 use russh::keys::*;
 use russh::*;
 use termion::raw::IntoRawMode;
@@ -22,7 +22,7 @@ use tokio::net::ToSocketAddrs;
 #[tokio::main]
 async fn main() -> Result<()> {
     env_logger::builder()
-        .filter_level(log::LevelFilter::Info)
+        .filter_level(tracing::LevelFilter::Info)
         .init();
 
     // CLI options are defined later in this file

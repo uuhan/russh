@@ -11,7 +11,7 @@ digest = "0.10"
 delegate = "0.13"
 futures = "0.3"
 hmac = "0.12"
-log = "0.4"
+tracing = "0.1"
 rand = "0.8"
 rsa = "0.9"
 sha1 = { version = "0.10", features = ["oid"] }

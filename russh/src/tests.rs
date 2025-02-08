@@ -10,7 +10,7 @@ mod compress {
 
     use crate::keys::key::PrivateKeyWithHashAlg;
     use async_trait::async_trait;
-    use log::debug;
+    use tracing::debug;
     use rand_core::OsRng;
     use ssh_key::PrivateKey;
 

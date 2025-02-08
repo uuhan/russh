@@ -10,7 +10,7 @@ use anyhow::Result;
 use async_trait::async_trait;
 use clap::Parser;
 use key::PrivateKeyWithHashAlg;
-use log::info;
+use tracing::info;
 use russh::keys::*;
 use russh::*;
 use tokio::io::AsyncWriteExt;
@@ -19,7 +19,7 @@ use tokio::net::ToSocketAddrs;
 #[tokio::main]
 async fn main() -> Result<()> {
     env_logger::builder()
-        .filter_level(log::LevelFilter::Debug)
+        .filter_level(tracing::LevelFilter::Debug)
         .init();
 
     // CLI options are defined later in this file

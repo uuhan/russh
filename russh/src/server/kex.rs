@@ -3,7 +3,7 @@ use std::ops::DerefMut;
 
 use crate::helpers::sign_workaround_encoded;
 use crate::keys::key::PrivateKeyWithHashAlg;
-use log::debug;
+use tracing::debug;
 use ssh_encoding::Encode;
 use ssh_key::Algorithm;
 

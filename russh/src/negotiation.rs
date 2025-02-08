@@ -15,7 +15,7 @@
 use std::borrow::Cow;
 
 use crate::helpers::NameList;
-use log::debug;
+use tracing::debug;
 use rand::RngCore;
 use ssh_encoding::{Decode, Encode};
 use ssh_key::{Algorithm, EcdsaCurve, HashAlg, PrivateKey};

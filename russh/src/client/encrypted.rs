@@ -19,7 +19,7 @@ use std::ops::Deref;
 
 use crate::helpers::{map_err, sign_workaround_encoded, AlgorithmExt, EncodedExt};
 use bytes::Bytes;
-use log::{debug, error, info, trace, warn};
+use tracing::{debug, error, info, trace, warn};
 use ssh_encoding::{Decode, Encode};
 
 use crate::cert::PublicKeyOrCertificate;

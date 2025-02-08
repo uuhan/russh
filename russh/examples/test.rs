@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
 use async_trait::async_trait;
-use log::debug;
+use tracing::debug;
 use rand_core::OsRng;
 use russh::keys::*;
 use russh::server::{Auth, Msg, Server as _, Session};
