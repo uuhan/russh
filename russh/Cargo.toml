@@ -81,6 +81,7 @@ serde = { version = "1.0", features = ["derive"] }
 typenum = "1.17"
 zeroize = "1.7"
 getrandom = { version = "0.2.15", features = ["js"] }
+anyhow.workspace = true
 
 [dev-dependencies]
 anyhow = "1.0"
