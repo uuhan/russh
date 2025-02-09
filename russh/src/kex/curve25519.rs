@@ -2,8 +2,8 @@ use byteorder::{BigEndian, ByteOrder};
 use curve25519_dalek::constants::ED25519_BASEPOINT_TABLE;
 use curve25519_dalek::montgomery::MontgomeryPoint;
 use curve25519_dalek::scalar::Scalar;
-use tracing::debug;
 use ssh_encoding::Encode;
+use tracing::debug;
 
 use super::{compute_keys, KexAlgorithm, KexType};
 use crate::kex::encode_mpint;

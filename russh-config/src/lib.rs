@@ -9,8 +9,8 @@ use std::net::ToSocketAddrs;
 use std::path::Path;
 
 use globset::Glob;
-use tracing::debug;
 use thiserror::*;
+use tracing::debug;
 
 #[derive(Debug, Error)]
 /// anyhow::Errors.

@@ -18,9 +18,9 @@ use std::fmt::{Debug, Formatter};
 use std::num::Wrapping;
 
 use byteorder::{BigEndian, ByteOrder};
-use tracing::{debug, trace};
 use ssh_encoding::Encode;
 use tokio::sync::oneshot;
+use tracing::{debug, trace};
 
 use crate::cipher::SealingKey;
 use crate::kex::KexAlgorithm;

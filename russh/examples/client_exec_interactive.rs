@@ -12,12 +12,12 @@ use anyhow::Result;
 use async_trait::async_trait;
 use clap::Parser;
 use key::PrivateKeyWithHashAlg;
-use tracing::info;
 use russh::keys::*;
 use russh::*;
 use termion::raw::IntoRawMode;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::ToSocketAddrs;
+use tracing::info;
 
 #[tokio::main]
 async fn main() -> Result<()> {

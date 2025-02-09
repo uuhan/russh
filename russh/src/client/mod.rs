@@ -48,7 +48,6 @@ use async_trait::async_trait;
 use bytes::Bytes;
 use futures::task::{Context, Poll};
 use futures::Future;
-use tracing::{debug, error, info, trace};
 use ssh_encoding::{Decode, Encode, Reader};
 use ssh_key::{Algorithm, Certificate, PrivateKey, PublicKey};
 use tokio::io::{AsyncRead, AsyncWrite, AsyncWriteExt, ReadHalf, WriteHalf};
@@ -57,6 +56,7 @@ use tokio::sync::mpsc::{
     channel, unbounded_channel, Receiver, Sender, UnboundedReceiver, UnboundedSender,
 };
 use tokio::sync::oneshot;
+use tracing::{debug, error, info, trace};
 
 use crate::channels::{Channel, ChannelMsg, ChannelRef, WindowSizeRef};
 use crate::cipher::{self, clear, CipherPair, OpeningKey};

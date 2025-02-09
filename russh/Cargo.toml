@@ -67,7 +67,13 @@ sec1 = { version = "0.7", features = ["pkcs8"] }
 thiserror.workspace = true
 russh-util = { version = "0.48.0", path = "../russh-util" }
 des = "0.8.1"
-tokio = { workspace = true, features = ["io-util", "sync", "time", "net"] }
+tokio = { workspace = true, features = [
+    "io-util",
+    "sync",
+    "time",
+    "net",
+    "signal",
+] }
 yasna = { version = "0.5.0", features = [
     "bit-vec",
     "num-bigint",
@@ -82,6 +88,7 @@ typenum = "1.17"
 zeroize = "1.7"
 getrandom = { version = "0.2.15", features = ["js"] }
 anyhow.workspace = true
+parking_lot.workspace = true
 
 [dev-dependencies]
 anyhow = "1.0"

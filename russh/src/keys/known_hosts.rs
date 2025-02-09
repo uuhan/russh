@@ -5,8 +5,8 @@ use std::path::{Path, PathBuf};
 
 use data_encoding::BASE64_MIME;
 use hmac::{Hmac, Mac};
-use tracing::debug;
 use sha1::Sha1;
+use tracing::debug;
 
 use crate::keys::Error;
 

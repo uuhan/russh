@@ -22,11 +22,11 @@ use auth::*;
 use byteorder::{BigEndian, ByteOrder};
 use bytes::Bytes;
 use cert::PublicKeyOrCertificate;
-use tracing::{debug, error, info, trace, warn};
 use negotiation::Select;
 use ssh_encoding::{Decode, Encode, Reader};
 use ssh_key::PublicKey;
 use tokio::time::Instant;
+use tracing::{debug, error, info, trace, warn};
 use {msg, negotiation};
 
 use super::super::*;

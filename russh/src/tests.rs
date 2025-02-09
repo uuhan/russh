@@ -10,9 +10,9 @@ mod compress {
 
     use crate::keys::key::PrivateKeyWithHashAlg;
     use async_trait::async_trait;
-    use tracing::debug;
     use rand_core::OsRng;
     use ssh_key::PrivateKey;
+    use tracing::debug;
 
     use super::server::{Server as _, Session};
     use super::*;

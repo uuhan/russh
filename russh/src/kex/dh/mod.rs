@@ -4,11 +4,11 @@ use std::marker::PhantomData;
 use byteorder::{BigEndian, ByteOrder};
 use digest::Digest;
 use groups::DH;
-use tracing::debug;
 use num_bigint::BigUint;
 use sha1::Sha1;
 use sha2::{Sha256, Sha512};
 use ssh_encoding::Encode;
+use tracing::debug;
 
 use self::groups::{DhGroup, DH_GROUP1, DH_GROUP14, DH_GROUP16};
 use super::{compute_keys, KexAlgorithm, KexType};
