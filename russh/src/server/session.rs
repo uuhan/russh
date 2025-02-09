@@ -472,10 +472,15 @@ impl Session {
             let mut sent_keepalive = false;
             tokio::select! {
                 r = &mut reading, if !channel_closed => {
-                    debug!("reading");
+                    let span = tracing::debug_span!("reading");
+                    let _guard = span.enter();
+
                     let (stream_read, mut buffer, mut opening_cipher) = match r {
                         Ok((_, stream_read, buffer, opening_cipher)) => (stream_read, buffer, opening_cipher),
-                        Err(e) => return Err(e.into())
+                        Err(e) => {
+                            debug!("err = {:?}", e);
+                            return Err(e.into())
+                        }
                     };
                     if buffer.buffer.len() < 5 {
                         is_reading = Some((stream_read, buffer, opening_cipher));
@@ -531,7 +536,7 @@ impl Session {
                     return Err(crate::Error::InactivityTimeout.into());
                 }
                 msg = self.receiver.recv(), if !self.is_rekeying() => {
-                    debug!("msg={:?}", msg);
+                    debug!("msg = {:?}", msg);
                     match msg {
                         Some(Msg::Channel(id, ChannelMsg::Data { data })) => {
                             self.data(id, data)?;
