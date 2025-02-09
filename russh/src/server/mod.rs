@@ -799,6 +799,7 @@ thread_local! {
     static B2: RefCell<CryptoVec> = RefCell::new(CryptoVec::new());
 }
 
+#[tracing::instrument(skip_all)]
 async fn start_reading<R: AsyncRead + Unpin>(
     mut stream_read: R,
     mut buffer: SSHBuffer,
@@ -839,6 +840,7 @@ impl<H: Handler> Future for RunningSession<H> {
 }
 
 /// Start a single connection in the background.
+#[tracing::instrument(skip_all)]
 pub async fn run_stream<H, R>(
     config: Arc<Config>,
     mut stream: R,
@@ -873,6 +875,7 @@ where
     Ok(RunningSession { handle, join })
 }
 
+#[tracing::instrument(skip_all)]
 async fn read_ssh_id<R: AsyncRead + Unpin>(
     config: Arc<Config>,
     read: &mut SshRead<R>,
@@ -925,6 +928,7 @@ async fn read_ssh_id<R: AsyncRead + Unpin>(
 
 const STRICT_KEX_MSG_ORDER: &[u8] = &[msg::KEXINIT, msg::KEX_ECDH_INIT, msg::NEWKEYS];
 
+#[tracing::instrument(skip(session, handler, buf))]
 async fn reply<H: Handler + Send>(
     session: &mut Session,
     handler: &mut H,

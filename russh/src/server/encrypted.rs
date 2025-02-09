@@ -149,6 +149,7 @@ impl Session {
         self.process_packet(handler, buf).await
     }
 
+    #[tracing::instrument(skip(self, handler), level = "debug")]
     async fn process_packet<H: Handler + Send>(
         &mut self,
         handler: &mut H,
@@ -397,6 +398,7 @@ thread_local! {
 }
 
 impl Encrypted {
+    #[tracing::instrument(skip_all, fields(user=auth_user), level="debug")]
     async fn server_read_auth_request_pk<H: Handler + Send>(
         &mut self,
         until: Instant,
@@ -678,6 +680,7 @@ async fn reply_userauth_info_response(
 }
 
 impl Session {
+    #[tracing::instrument(skip_all, fields(msg=msg))]
     async fn server_read_authenticated<H: Handler + Send, R: Reader>(
         &mut self,
         handler: &mut H,

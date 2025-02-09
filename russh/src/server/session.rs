@@ -429,6 +429,7 @@ impl Session {
         }
     }
 
+    #[tracing::instrument(skip_all, level = "info", name = "session::run")]
     pub(crate) async fn run<H, R>(
         mut self,
         mut stream: SshRead<R>,
@@ -439,6 +440,7 @@ impl Session {
         R: AsyncRead + AsyncWrite + Unpin + Send + 'static,
     {
         self.flush()?;
+        // map_err!(stream.write_all(&self.common.write_buffer.buffer).await)?;
         map_err!(stream.write_all(&self.common.write_buffer.buffer).await)?;
         self.common.write_buffer.buffer.clear();
 
@@ -459,6 +461,7 @@ impl Session {
 
         let reading = start_reading(stream_read, buffer, opening_cipher);
         pin!(reading);
+
         let mut is_reading = None;
         let mut decomp = CryptoVec::new();
         let mut channel_closed = false;
@@ -528,7 +531,7 @@ impl Session {
                     return Err(crate::Error::InactivityTimeout.into());
                 }
                 msg = self.receiver.recv(), if !self.is_rekeying() => {
-                    debug!("msg = {:?}", msg);
+                    debug!("msg={:?}", msg);
                     match msg {
                         Some(Msg::Channel(id, ChannelMsg::Data { data })) => {
                             self.data(id, data)?;
@@ -660,6 +663,7 @@ impl Session {
         self.sender.clone()
     }
 
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn writable_packet_size(&self, channel: &ChannelId) -> u32 {
         if let Some(ref enc) = self.common.encrypted {
             if let Some(channel) = enc.channels.get(channel) {
@@ -671,6 +675,7 @@ impl Session {
         0
     }
 
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn window_size(&self, channel: &ChannelId) -> u32 {
         if let Some(ref enc) = self.common.encrypted {
             if let Some(channel) = enc.channels.get(channel) {
@@ -680,6 +685,7 @@ impl Session {
         0
     }
 
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn max_packet_size(&self, channel: &ChannelId) -> u32 {
         if let Some(ref enc) = self.common.encrypted {
             if let Some(channel) = enc.channels.get(channel) {
@@ -690,6 +696,7 @@ impl Session {
     }
 
     /// Flush the session, i.e. encrypt the pending buffer.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn flush(&mut self) -> Result<(), Error> {
         if let Some(ref mut enc) = self.common.encrypted {
             if enc.flush(
@@ -713,6 +720,7 @@ impl Session {
         Ok(())
     }
 
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn flush_pending(&mut self, channel: ChannelId) -> Result<usize, Error> {
         if let Some(ref mut enc) = self.common.encrypted {
             enc.flush_pending(channel)
@@ -721,6 +729,7 @@ impl Session {
         }
     }
 
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn sender_window_size(&self, channel: ChannelId) -> usize {
         if let Some(ref enc) = self.common.encrypted {
             enc.sender_window_size(channel)
@@ -729,6 +738,7 @@ impl Session {
         }
     }
 
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn has_pending_data(&self, channel: ChannelId) -> bool {
         if let Some(ref enc) = self.common.encrypted {
             enc.has_pending_data(channel)
@@ -743,6 +753,7 @@ impl Session {
     }
 
     /// Sends a disconnect message.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn disconnect(
         &mut self,
         reason: Disconnect,
@@ -756,6 +767,7 @@ impl Session {
     /// a channel number, such as TCP/IP forwarding or
     /// cancelling). Always call this function if the request was
     /// successful (it checks whether the client expects an answer).
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn request_success(&mut self) {
         if self.common.wants_reply {
             if let Some(ref mut enc) = self.common.encrypted {
@@ -766,6 +778,7 @@ impl Session {
     }
 
     /// Send a "failure" reply to a global request.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn request_failure(&mut self) {
         if let Some(ref mut enc) = self.common.encrypted {
             self.common.wants_reply = false;
@@ -776,13 +789,14 @@ impl Session {
     /// Send a "success" reply to a channel request. Always call this
     /// function if the request was successful (it checks whether the
     /// client expects an answer).
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn channel_success(&mut self, channel: ChannelId) -> Result<(), crate::Error> {
         if let Some(ref mut enc) = self.common.encrypted {
             if let Some(channel) = enc.channels.get_mut(&channel) {
                 assert!(channel.confirmed);
+                debug!("channel{{wants_reply={}}}", channel.wants_reply);
                 if channel.wants_reply {
                     channel.wants_reply = false;
-                    debug!("channel_success {:?}", channel);
                     push_packet!(enc.write, {
                         msg::CHANNEL_SUCCESS.encode(&mut enc.write)?;
                         channel.recipient_channel.encode(&mut enc.write)?;
@@ -794,10 +808,12 @@ impl Session {
     }
 
     /// Send a "failure" reply to a global request.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn channel_failure(&mut self, channel: ChannelId) -> Result<(), crate::Error> {
         if let Some(ref mut enc) = self.common.encrypted {
             if let Some(channel) = enc.channels.get_mut(&channel) {
                 assert!(channel.confirmed);
+                debug!("channel{{wants_reply={}}}", channel.wants_reply);
                 if channel.wants_reply {
                     channel.wants_reply = false;
                     push_packet!(enc.write, {
@@ -811,6 +827,7 @@ impl Session {
     }
 
     /// Send a "failure" reply to a request to open a channel open.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn channel_open_failure(
         &mut self,
         channel: ChannelId,
@@ -831,11 +848,13 @@ impl Session {
     }
 
     /// Close a channel.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn close(&mut self, channel: ChannelId) -> Result<(), Error> {
         self.common.byte(channel, msg::CHANNEL_CLOSE)
     }
 
     /// Send EOF to a channel
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn eof(&mut self, channel: ChannelId) -> Result<(), Error> {
         self.common.byte(channel, msg::CHANNEL_EOF)
     }
@@ -846,6 +865,7 @@ impl Session {
     ///
     /// The number of bytes added to the "sending pipeline" (to be
     /// processed by the event loop) is returned.
+    #[tracing::instrument(skip(self, data), level = "debug")]
     pub fn data(&mut self, channel: ChannelId, data: CryptoVec) -> Result<(), Error> {
         if let Some(ref mut enc) = self.common.encrypted {
             enc.data(channel, data)
@@ -860,6 +880,7 @@ impl Session {
     ///
     /// The number of bytes added to the "sending pipeline" (to be
     /// processed by the event loop) is returned.
+    #[tracing::instrument(skip(self, data), level = "debug")]
     pub fn extended_data(
         &mut self,
         channel: ChannelId,
@@ -876,6 +897,7 @@ impl Session {
     /// Inform the client of whether they may perform
     /// control-S/control-Q flow control. See
     /// [RFC4254](https://tools.ietf.org/html/rfc4254#section-6.8).
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn xon_xoff_request(
         &mut self,
         channel: ChannelId,
@@ -898,6 +920,7 @@ impl Session {
     }
 
     /// Ping the client to verify there is still connectivity.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn keepalive_request(&mut self) -> Result<(), Error> {
         let want_reply = u8::from(true);
         if let Some(ref mut enc) = self.common.encrypted {
@@ -913,6 +936,7 @@ impl Session {
     }
 
     /// Send the exit status of a program.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn exit_status_request(
         &mut self,
         channel: ChannelId,
@@ -935,6 +959,7 @@ impl Session {
     }
 
     /// If the program was killed by a signal, send the details about the signal to the client.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn exit_signal_request(
         &mut self,
         channel: ChannelId,
@@ -963,11 +988,13 @@ impl Session {
     }
 
     /// Opens a new session channel on the client.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn channel_open_session(&mut self) -> Result<ChannelId, Error> {
         self.channel_open_generic(b"session", |_| Ok(()))
     }
 
     /// Opens a direct TCP/IP channel on the client.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn channel_open_direct_tcpip(
         &mut self,
         host_to_connect: &str,
@@ -989,6 +1016,7 @@ impl Session {
     /// [RFC4254](https://tools.ietf.org/html/rfc4254#section-7). The
     /// TCP/IP packets can then be tunneled through the channel using
     /// `.data()`.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn channel_open_forwarded_tcpip(
         &mut self,
         connected_address: &str,
@@ -1005,6 +1033,7 @@ impl Session {
         })
     }
 
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn channel_open_forwarded_streamlocal(
         &mut self,
         socket_path: &str,
@@ -1019,6 +1048,7 @@ impl Session {
     /// Open a new X11 channel, when a connection comes to a
     /// local port. See [RFC4254](https://tools.ietf.org/html/rfc4254#section-6.3.2).
     /// TCP/IP packets can then be tunneled through the channel using `.data()`.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn channel_open_x11(
         &mut self,
         originator_address: &str,
@@ -1032,10 +1062,12 @@ impl Session {
     }
 
     /// Opens a new agent channel on the client.
+    #[tracing::instrument(skip(self), level = "debug")]
     pub fn channel_open_agent(&mut self) -> Result<ChannelId, Error> {
         self.channel_open_generic(b"auth-agent@openssh.com", |_| Ok(()))
     }
 
+    #[tracing::instrument(skip(self, write_suffix), level = "debug")]
     fn channel_open_generic<F>(&mut self, kind: &[u8], write_suffix: F) -> Result<ChannelId, Error>
     where
         F: FnOnce(&mut CryptoVec) -> Result<(), Error>,
@@ -1085,6 +1117,7 @@ impl Session {
     /// Requests that the client forward connections to the given host and port.
     /// See [RFC4254](https://tools.ietf.org/html/rfc4254#section-7). The client
     /// will open forwarded_tcpip channels for each connection.
+    #[tracing::instrument(skip(self, reply_channel), level = "debug")]
     pub fn tcpip_forward(
         &mut self,
         address: &str,
@@ -1110,6 +1143,7 @@ impl Session {
     }
 
     /// Cancels a previously tcpip_forward request.
+    #[tracing::instrument(skip(self, reply_channel), level = "debug")]
     pub fn cancel_tcpip_forward(
         &mut self,
         address: &str,
@@ -1143,10 +1177,12 @@ impl Session {
     /// > characters and the minus sign (-).
     ///
     /// So it usually is fine to convert it to a [`String`] using [`String::from_utf8_lossy`]
+    #[tracing::instrument(skip(self), ret(level = "debug"), level = "debug")]
     pub fn remote_sshid(&self) -> &[u8] {
         &self.common.remote_sshid
     }
 
+    #[tracing::instrument(skip(self), level = "debug")]
     pub(crate) fn maybe_send_ext_info(&mut self) -> Result<(), Error> {
         if let Some(ref mut enc) = self.common.encrypted {
             // If client sent a ext-info-c message in the kex list, it supports RFC 8308 extension negotiation.

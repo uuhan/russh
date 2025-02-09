@@ -5,7 +5,7 @@ use crate::helpers::sign_workaround_encoded;
 use crate::keys::key::PrivateKeyWithHashAlg;
 use ssh_encoding::Encode;
 use ssh_key::Algorithm;
-use tracing::debug;
+use tracing::trace;
 
 use super::*;
 use crate::cipher::SealingKey;
@@ -40,7 +40,7 @@ impl KexInit {
                 .iter()
                 .position(|key| is_key_compatible_with_algo(key, &algo.key))
             else {
-                debug!("unknown key {:?}", algo.key);
+                trace!("unknown key {:?}", algo.key);
                 return Err(Error::UnknownKey);
             };
 
@@ -69,7 +69,7 @@ impl KexInit {
             &mut self.exchange.server_kex_init,
             Some(config),
         )?;
-        debug!("server kex init: {:?}", &self.exchange.server_kex_init[..]);
+        trace!("server kex init: {:?}", &self.exchange.server_kex_init[..]);
         self.sent = true;
         cipher.write(&self.exchange.server_kex_init, write_buffer);
         Ok(())
@@ -123,7 +123,7 @@ impl KexDh {
             let hash: Result<_, Error> = HASH_BUF.with(|buffer| {
                 let mut buffer = buffer.borrow_mut();
                 buffer.clear();
-                debug!("server kexdhdone.exchange = {:?}", kexdhdone.exchange);
+                trace!("server kexdhdone.exchange = {:?}", kexdhdone.exchange);
 
                 let mut pubkey_vec = CryptoVec::new();
                 key.public_key().to_bytes()?.encode(&mut pubkey_vec)?;
@@ -133,7 +133,7 @@ impl KexDh {
                     &kexdhdone.exchange,
                     &mut buffer,
                 )?;
-                debug!("exchange hash: {:?}", hash);
+                trace!("exchange hash: {:?}", hash);
                 buffer.clear();
                 buffer.push(msg::KEX_ECDH_REPLY);
                 key.public_key().to_bytes()?.encode(buffer.deref_mut())?;
@@ -145,9 +145,9 @@ impl KexDh {
                     .encode(buffer.deref_mut())?;
 
                 // Hash signature
-                debug!("signing with key {:?}", kexdhdone.key);
-                debug!("hash: {:?}", hash);
-                debug!("key: {:?}", key);
+                trace!("signing with key {:?}", kexdhdone.key);
+                trace!("hash: {:?}", hash);
+                trace!("key: {:?}", key);
 
                 sign_workaround_encoded(
                     &PrivateKeyWithHashAlg::new(Arc::new(key.clone()), signature_hash_alg)?,

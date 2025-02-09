@@ -30,7 +30,7 @@ use des::TdesEde3;
 use once_cell::sync::Lazy;
 use ssh_encoding::Encode;
 use tokio::io::{AsyncRead, AsyncReadExt};
-use tracing::debug;
+use tracing::{debug, Instrument};
 
 use crate::mac::MacAlgorithm;
 use crate::sshbuffer::SSHBuffer;
@@ -240,6 +240,7 @@ pub(crate) trait SealingKey {
     }
 }
 
+#[tracing::instrument(skip_all, fields(len=buffer.len))]
 pub(crate) async fn read<'a, R: AsyncRead + Unpin>(
     stream: &'a mut R,
     buffer: &'a mut SSHBuffer,
@@ -248,7 +249,10 @@ pub(crate) async fn read<'a, R: AsyncRead + Unpin>(
     if buffer.len == 0 {
         let mut len = vec![0; cipher.packet_length_to_read_for_block_length()];
 
-        stream.read_exact(&mut len).await?;
+        stream
+            .read_exact(&mut len)
+            .instrument(tracing::info_span!("stream.read_exact"))
+            .await?;
         debug!("reading, len = {:?}", len);
         {
             let seqn = buffer.seqn.0;
