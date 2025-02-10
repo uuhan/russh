@@ -12,12 +12,17 @@ repository = "https://github.com/warp-tech/russh"
 version = "0.49.3-alpha.0"
 rust-version = "1.65"
 
+[package.metadata.cargo-machete]
+ignored = ["inout"]
+
 [features]
 default = ["flate2"]
 legacy-ed25519-pkcs8-parser = ["yasna"]
 
 [dependencies]
 aes.workspace = true
+# use aes::cipher::inout::PadError;
+inout = { version = "0.1", features = ["std"] }
 aes-gcm = "0.10"
 cbc = { version = "0.1" }
 async-trait.workspace = true
@@ -78,17 +83,8 @@ yasna = { version = "0.5.0", features = [
     "bit-vec",
     "num-bigint",
 ], optional = true }
-bcrypt-pbkdf = "0.10"
-ecdsa = "0.16"
-inout = { version = "0.1", features = ["std"] }
-num-integer = "0.1"
 pbkdf2 = "0.12"
-serde = { version = "1.0", features = ["derive"] }
-typenum = "1.17"
-zeroize = "1.7"
-getrandom = { version = "0.2.15", features = ["js"] }
 anyhow.workspace = true
-parking_lot.workspace = true
 
 [dev-dependencies]
 anyhow = "1.0"

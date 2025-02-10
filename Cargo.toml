@@ -29,5 +29,4 @@ ssh-key = { version = "0.6", features = [
 thiserror = "1.0"
 tokio = { version = "1.17.0" }
 tokio-stream = { version = "0.1", features = ["net", "sync"] }
-parking_lot = "0.12"
 anyhow = { version = "1.0", features = ["backtrace"] }
