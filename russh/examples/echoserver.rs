@@ -8,11 +8,13 @@ use russh::keys::*;
 use russh::server::{Msg, Server as _, Session};
 use russh::*;
 use tokio::sync::Mutex;
+use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
 #[tokio::main]
 async fn main() {
-    env_logger::builder()
-        .filter_level(tracing::LevelFilter::Debug)
+    tracing_subscriber::registry()
+        .with(fmt::layer())
+        .with(EnvFilter::from_default_env())
         .init();
 
     let config = russh::server::Config {
@@ -61,7 +63,7 @@ impl server::Server for Server {
         s
     }
     fn handle_session_error(&mut self, _error: <Self::Handler as russh::server::Handler>::Error) {
-        eprintln!("Session error: {:#?}", _error);
+        tracing::error!("Session error: {:#?}", _error);
     }
 }
 
@@ -123,6 +125,7 @@ impl server::Handler for Server {
         let handle = session.handle();
         let address = address.to_string();
         let port = *port;
+        tracing::info!("Forwarding {}:{}", address, port);
         tokio::spawn(async move {
             let channel = handle
                 .channel_open_forwarded_tcpip(address, port, "1.2.3.4", 1234)
